@@ -8,6 +8,9 @@ create table if not exists public.contact_messages (
 
 alter table public.contact_messages enable row level security;
 
+grant usage on schema public to anon;
+grant insert on public.contact_messages to anon;
+
 drop policy if exists "Allow public contact inserts" on public.contact_messages;
 
 create policy "Allow public contact inserts"
@@ -16,6 +19,8 @@ for insert
 to anon
 with check (
   length(trim(name)) between 2 and 120
-  and email ~* '^[^@\s]+@[^@\s]+\.[^@\s]+$'
+  and length(trim(email)) between 5 and 254
+  and position('@' in email) > 1
+  and position('.' in split_part(email, '@', 2)) > 1
   and length(trim(message)) between 10 and 4000
 );

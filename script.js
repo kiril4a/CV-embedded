@@ -31,7 +31,11 @@ const translations = {
     "contact.status.sending": "Sending message...",
     "contact.status.success": "Message saved. I will get back with a response.",
     "contact.status.config": "Add Supabase URL and anon key in script.js first.",
-    "contact.status.error": "Could not send the message. Try writing directly by email."
+    "contact.status.error": "Could not send the message. Try writing directly by email.",
+    "contact.status.validation": "Use a name with 2+ characters, a valid email, and a message with at least 10 characters.",
+    "contact.chip.storage": "Private storage",
+    "contact.chip.access": "Insert-only access",
+    "contact.chip.reply": "Direct follow-up"
   },
   uk: {
     "loader.booting": "Завантаження embedded profile",
@@ -96,8 +100,12 @@ const translations = {
     "contact.status.success": "Повідомлення збережено. Я повернусь із відповіддю.",
     "contact.status.config": "Потрібно додати Supabase URL і anon key у script.js.",
     "contact.status.error": "Не вдалось надіслати повідомлення. Спробуй написати напряму на email.",
-    "contact.supabase.title": "Supabase setup",
-    "contact.supabase.text": "Форма вже підготовлена для Supabase. Додай project URL і anon key у script.js, створи таблицю contact_messages, і заявки будуть зберігатися там.",
+    "contact.status.validation": "Ім'я має бути від 2 символів, email валідним, а повідомлення не коротшим за 10 символів.",
+    "contact.supabase.title": "Як обробляються повідомлення",
+    "contact.supabase.text": "Повідомлення зберігається у приватній черзі заявок з публічним доступом тільки на додавання. Я використовую її для пропозицій, ідей співпраці та технічних питань, на які варто відповісти уважно.",
+    "contact.chip.storage": "Приватне зберігання",
+    "contact.chip.access": "Тільки додавання",
+    "contact.chip.reply": "Пряма відповідь",
     "project.esp.eyebrow": "Проєкт 01",
     "project.esp.title": "ESP8266 Camera Streaming & Object Tracking",
     "project.esp.lead": "Компактна система відеоспостереження й tracking на базі ESP8266 та ArduCAM OV2640. Головна ідея: motion detection і target tracking рахуються прямо на мікроконтролері, а браузер лише візуалізує результат.",
@@ -290,8 +298,15 @@ if (contactForm && contactStatus) {
       message: String(formData.get("message") ?? "").trim()
     };
 
-    if (!payload.name || !payload.email || !payload.message) {
-      setContactStatus("contact.status.error", "error");
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email);
+    if (
+      payload.name.length < 2 ||
+      payload.name.length > 120 ||
+      !isValidEmail ||
+      payload.message.length < 10 ||
+      payload.message.length > 4000
+    ) {
+      setContactStatus("contact.status.validation", "error");
       return;
     }
 
@@ -312,7 +327,8 @@ if (contactForm && contactStatus) {
       });
 
       if (!response.ok) {
-        throw new Error(`Supabase insert failed: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(`Supabase insert failed: ${response.status} ${errorText}`);
       }
 
       contactForm.reset();
