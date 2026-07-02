@@ -1,3 +1,5 @@
 SUPABASE_EMAIL_SETUP.md
 supabase-contact-email-webhook.sql
 supabase/functions/contact-email/index.ts
+supabase-email-debug.sql
+supabase/functions/clever-responder/index.ts

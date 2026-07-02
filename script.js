@@ -274,10 +274,6 @@ const setContactStatus = (key, type = "") => {
 };
 
 if (contactForm && contactStatus) {
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-    setContactStatus("contact.status.config", "error");
-  }
-
   contactForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
