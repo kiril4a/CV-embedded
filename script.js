@@ -12,8 +12,27 @@ const langButtons = document.querySelectorAll("[data-lang]");
 const siteHeader = document.querySelector(".site-header");
 const menuToggle = document.querySelector(".menu-toggle");
 const topNav = document.querySelector(".top-nav");
+const contactForm = document.querySelector("[data-contact-form]");
+const contactStatus = document.querySelector("[data-contact-status]");
+
+const SUPABASE_URL = "https://zvzpuynjkxajzajkjcjx.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2enB1eW5qa3hhanphamtqY2p4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMjE4NzEsImV4cCI6MjA5ODU5Nzg3MX0.5q011I_yP_m2LvBBgb9KPunhujozkXdeDkmWXiHPU7o";
+const CONTACT_TABLE = "contact_messages";
+
+if (window.location.pathname.endsWith("/index.html")) {
+  const cleanPath = window.location.pathname.replace(/index\.html$/, "");
+  window.history.replaceState(null, "", `${cleanPath}${window.location.search}${window.location.hash}`);
+}
 
 const translations = {
+  en: {
+    "nav.contact": "Contact",
+    "contact.status.idle": "Supabase connection is not configured yet.",
+    "contact.status.sending": "Sending message...",
+    "contact.status.success": "Message saved. I will get back with a response.",
+    "contact.status.config": "Add Supabase URL and anon key in script.js first.",
+    "contact.status.error": "Could not send the message. Try writing directly by email."
+  },
   uk: {
     "loader.booting": "Завантаження embedded profile",
     "aria.loading": "Завантаження сторінки",
@@ -28,10 +47,12 @@ const translations = {
     "meta.esp.description": "ESP8266 camera streaming та object tracking project by Kyrylo Matiushenko.",
     "meta.ev.description": "Electric vehicle conversion та embedded control system by Kyrylo Matiushenko.",
     "meta.ai.description": "AI-assisted embedded navigation system by Kyrylo Matiushenko.",
+    "meta.contact.description": "Зв'язок з Kyrylo Matiushenko для embedded, IoT та computer vision проєктів.",
     "nav.about": "Про мене",
     "nav.esp": "ESP8266 Vision",
     "nav.ev": "EV Control",
     "nav.ai": "AI Navigation",
+    "nav.contact": "Зв'язок",
     "nav.cv": "Відкрити CV",
     "home.hero.eyebrow": "Embedded software / IoT / robotics",
     "home.hero.title": "Поєдную software, hardware та автономні системи.",
@@ -62,6 +83,21 @@ const translations = {
     "home.stack.eyebrow": "Tech stack",
     "home.stack.title": "Технології, якими я перетворюю сигнали на робочі системи.",
     "footer.role": "Embedded Developer, Київ, Україна",
+    "contact.eyebrow": "Зв'язок",
+    "contact.title": "Обговоримо проєкт, пропозицію або співпрацю.",
+    "contact.lead": "Напиши коротко, що потрібно зробити, яке залізо або software вже є, і на якому етапі зараз задача.",
+    "contact.direct": "Прямі контакти",
+    "contact.name": "Ім'я",
+    "contact.email": "Email",
+    "contact.message": "Повідомлення",
+    "contact.submit": "Надіслати",
+    "contact.status.idle": "Supabase ще не налаштований.",
+    "contact.status.sending": "Надсилаю повідомлення...",
+    "contact.status.success": "Повідомлення збережено. Я повернусь із відповіддю.",
+    "contact.status.config": "Потрібно додати Supabase URL і anon key у script.js.",
+    "contact.status.error": "Не вдалось надіслати повідомлення. Спробуй написати напряму на email.",
+    "contact.supabase.title": "Supabase setup",
+    "contact.supabase.text": "Форма вже підготовлена для Supabase. Додай project URL і anon key у script.js, створи таблицю contact_messages, і заявки будуть зберігатися там.",
     "project.esp.eyebrow": "Проєкт 01",
     "project.esp.title": "ESP8266 Camera Streaming & Object Tracking",
     "project.esp.lead": "Компактна система відеоспостереження й tracking на базі ESP8266 та ArduCAM OV2640. Головна ідея: motion detection і target tracking рахуються прямо на мікроконтролері, а браузер лише візуалізує результат.",
@@ -139,13 +175,15 @@ const pageTitles = {
     home: "Kyrylo Matiushenko | Embedded Developer",
     esp: "ESP8266 Vision | Kyrylo Matiushenko",
     ev: "EV Control | Kyrylo Matiushenko",
-    ai: "AI Navigation | Kyrylo Matiushenko"
+    ai: "AI Navigation | Kyrylo Matiushenko",
+    contact: "Contact | Kyrylo Matiushenko"
   },
   uk: {
     home: "Kyrylo Matiushenko | Embedded Developer",
     esp: "ESP8266 Vision | Kyrylo Matiushenko",
     ev: "EV Control | Kyrylo Matiushenko",
-    ai: "AI Navigation | Kyrylo Matiushenko"
+    ai: "AI Navigation | Kyrylo Matiushenko",
+    contact: "Зв'язок | Kyrylo Matiushenko"
   }
 };
 
@@ -210,6 +248,83 @@ langButtons.forEach((button) => {
 });
 
 applyLanguage(getStoredLanguage());
+
+const getTranslation = (key) => {
+  const language = document.documentElement.lang === "uk" ? "uk" : "en";
+  return translations[language]?.[key] ?? translations.uk[key] ?? key;
+};
+
+const setContactStatus = (key, type = "") => {
+  if (!contactStatus) {
+    return;
+  }
+
+  contactStatus.dataset.i18n = key;
+  contactStatus.textContent = getTranslation(key);
+  contactStatus.classList.toggle("is-success", type === "success");
+  contactStatus.classList.toggle("is-error", type === "error");
+};
+
+if (contactForm && contactStatus) {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    setContactStatus("contact.status.config", "error");
+  }
+
+  contactForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(contactForm);
+    if (formData.get("company")) {
+      contactForm.reset();
+      return;
+    }
+
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+      setContactStatus("contact.status.config", "error");
+      return;
+    }
+
+    const payload = {
+      name: String(formData.get("name") ?? "").trim(),
+      email: String(formData.get("email") ?? "").trim(),
+      message: String(formData.get("message") ?? "").trim()
+    };
+
+    if (!payload.name || !payload.email || !payload.message) {
+      setContactStatus("contact.status.error", "error");
+      return;
+    }
+
+    const submitButton = contactForm.querySelector("button[type='submit']");
+    submitButton.disabled = true;
+    setContactStatus("contact.status.sending");
+
+    try {
+      const response = await fetch(`${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/${CONTACT_TABLE}`, {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Supabase insert failed: ${response.status}`);
+      }
+
+      contactForm.reset();
+      setContactStatus("contact.status.success", "success");
+    } catch (error) {
+      console.error(error);
+      setContactStatus("contact.status.error", "error");
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+}
 
 if (siteHeader && menuToggle && topNav) {
   const menuMedia = window.matchMedia("(max-width: 980px)");
