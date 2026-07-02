@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Electric vehicle conversion embedded control system by Kyrylo Matiushenko." data-i18n-content="meta.ev.description">
+    <title>EV Control | Kyrylo Matiushenko</title>
+    <link rel="stylesheet" href="../styles.css">
+    <script defer src="../script.js"></script>
+  </head>
+  <body data-page="ev">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><span class="brand-mark">KM</span><span>Kyrylo Matiushenko</span></a>
+      <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-navigation" data-i18n-aria="aria.menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav id="main-navigation" class="top-nav" aria-label="Main navigation" data-i18n-aria="aria.nav">
+        <a href="../index.html" data-i18n="nav.about">About</a>
+        <a href="esp8266-camera.html" data-i18n="nav.esp">ESP8266 Vision</a>
+        <a href="ev-conversion.html" aria-current="page" data-i18n="nav.ev">EV Control</a>
+        <a href="ai-navigation.html" data-i18n="nav.ai">AI Navigation</a>
+        <a class="nav-cv" href="../Junior Embedded Developer Matiushenko Kyrylo.pdf" data-i18n="nav.cv">Open CV</a>
+        <div class="lang-switch" aria-label="Language selector" data-i18n-aria="aria.language">
+          <button type="button" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" data-lang="uk" aria-pressed="false">UA</button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="project-page">
+      <section class="project-hero project-hero-with-media reveal">
+        <div class="project-hero-copy">
+          <p class="eyebrow" data-i18n="project.ev.eyebrow">Project 02</p>
+          <h1 data-i18n="project.ev.title">Electric Vehicle Conversion & Embedded Control System</h1>
+          <p class="lead" data-i18n="project.ev.lead">
+            Embedded control for a Honda Tact 24 EV conversion, including RF keyless access,
+            RFID logic, UART communication, PWM, and motor-control integration.
+          </p>
+        </div>
+        <div class="project-hero-media">
+          <img src="../assets/ev-conversion-redacted.png" alt="Honda Tact 24 electric conversion test ride" data-i18n-alt="project.ev.photo">
+        </div>
+      </section>
+
+      <section class="project-layout">
+        <article class="project-main reveal">
+          <h2 data-i18n="project.what">What it proves</h2>
+          <p data-i18n="project.ev.proves">
+            This project sits in the practical zone between electronics, firmware, and power
+            systems. It required designing control behavior for a real vehicle platform,
+            where reliability and debugging matter more than clean diagrams.
+          </p>
+          <p data-i18n="project.ev.proves2">
+            The conversion was not only about replacing an engine with an electric drive. The
+            interesting part was building the control layer around it: access logic, signal
+            routing, motor controller integration, and predictable behavior when the system is
+            powered, armed, started, and tested on real hardware.
+          </p>
+
+          <h2 data-i18n="project.ev.system.title">System architecture</h2>
+          <div class="feature-list">
+            <div>
+              <strong data-i18n="project.ev.system1.title">Vehicle access</strong>
+              <p data-i18n="project.ev.system1.text">RF keyless access and RFID logic were used as the entry point for enabling the vehicle electronics.</p>
+            </div>
+            <div>
+              <strong data-i18n="project.ev.system2.title">Control firmware</strong>
+              <p data-i18n="project.ev.system2.text">Arduino Nano firmware coordinated states, input signals, PWM behavior, and communication with the rest of the system.</p>
+            </div>
+            <div>
+              <strong data-i18n="project.ev.system3.title">Power integration</strong>
+              <p data-i18n="project.ev.system3.text">The control electronics had to work near a real traction system, so noise, wiring, grounding, and fail states mattered.</p>
+            </div>
+          </div>
+
+          <h2 data-i18n="project.ev.firmware.title">Firmware behavior</h2>
+          <p data-i18n="project.ev.firmware.text">
+            The firmware treated the scooter as a state machine rather than a set of separate
+            switches. It had to distinguish inactive, authorized, armed, and running states,
+            react to RF/RFID input, and keep motor-control signals predictable instead of
+            letting random input combinations reach the controller.
+          </p>
+          <p data-i18n="project.ev.firmware.text2">
+            UART and PWM were used as practical embedded interfaces rather than demo features:
+            UART for device-level communication and diagnostics, PWM for control signaling, and
+            discrete inputs/outputs for vehicle behavior that had to be visible and testable on
+            the bench before road tests.
+          </p>
+
+          <h2 data-i18n="project.ev.testing.title">Testing on real hardware</h2>
+          <p data-i18n="project.ev.testing.text">
+            The main challenge was that every firmware decision affected a physical vehicle.
+            Debugging meant checking code, wiring, voltage levels, connector reliability, and
+            the actual response of the motor controller. This made the project closer to an
+            embedded integration task than a clean isolated Arduino prototype.
+          </p>
+
+          <h2 data-i18n="project.responsibilities">Core responsibilities</h2>
+          <ul>
+            <li data-i18n="project.ev.li1">Implemented Arduino Nano firmware for embedded vehicle-control logic.</li>
+            <li data-i18n="project.ev.li2">Integrated RF keyless access and RFID-based interaction.</li>
+            <li data-i18n="project.ev.li3">Worked with UART, PWM, motor-control signals, and power electronics constraints.</li>
+            <li data-i18n="project.ev.li4">Tested and debugged firmware against physical hardware behavior.</li>
+            <li data-i18n="project.ev.li5">Structured vehicle behavior as clear states instead of loose independent switches.</li>
+            <li data-i18n="project.ev.li6">Validated control electronics through bench checks and practical ride testing.</li>
+          </ul>
+        </article>
+        <aside class="project-side reveal">
+          <h2 data-i18n="project.stack">Stack</h2>
+          <div class="stack-cloud compact">
+            <span>Arduino Nano</span>
+            <span>C++</span>
+            <span>RF Communication</span>
+            <span>RFID</span>
+            <span>UART</span>
+            <span>PWM</span>
+            <span>Motor Control</span>
+            <span>Power Electronics</span>
+          </div>
+          <div class="project-facts">
+            <div>
+              <strong>Arduino Nano</strong>
+              <span data-i18n="project.ev.fact1">main controller</span>
+            </div>
+            <div>
+              <strong>RF + RFID</strong>
+              <span data-i18n="project.ev.fact2">access logic</span>
+            </div>
+            <div>
+              <strong>UART / PWM</strong>
+              <span data-i18n="project.ev.fact3">control interfaces</span>
+            </div>
+            <div>
+              <strong>Honda Tact 24</strong>
+              <span data-i18n="project.ev.fact4">vehicle platform</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </body>
+</html>

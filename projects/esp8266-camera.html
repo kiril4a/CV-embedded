@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="ESP8266 camera streaming and object tracking project by Kyrylo Matiushenko." data-i18n-content="meta.esp.description">
+    <title>ESP8266 Vision | Kyrylo Matiushenko</title>
+    <link rel="stylesheet" href="../styles.css">
+    <script defer src="../script.js"></script>
+  </head>
+  <body data-page="esp">
+    <header class="site-header">
+      <a class="brand" href="../index.html"><span class="brand-mark">KM</span><span>Kyrylo Matiushenko</span></a>
+      <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-navigation" data-i18n-aria="aria.menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav id="main-navigation" class="top-nav" aria-label="Main navigation" data-i18n-aria="aria.nav">
+        <a href="../index.html" data-i18n="nav.about">About</a>
+        <a href="esp8266-camera.html" aria-current="page" data-i18n="nav.esp">ESP8266 Vision</a>
+        <a href="ev-conversion.html" data-i18n="nav.ev">EV Control</a>
+        <a href="ai-navigation.html" data-i18n="nav.ai">AI Navigation</a>
+        <a class="nav-cv" href="../Junior Embedded Developer Matiushenko Kyrylo.pdf" data-i18n="nav.cv">Open CV</a>
+        <div class="lang-switch" aria-label="Language selector" data-i18n-aria="aria.language">
+          <button type="button" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" data-lang="uk" aria-pressed="false">UA</button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="project-page">
+      <section class="project-hero project-hero-with-media reveal">
+        <div class="project-hero-copy">
+          <p class="eyebrow" data-i18n="project.esp.eyebrow">Project 01</p>
+          <h1 data-i18n="project.esp.title">ESP8266 Camera Streaming & Object Tracking</h1>
+          <p class="lead" data-i18n="project.esp.lead">
+            A compact surveillance and tracking system built around ESP8266 and ArduCAM OV2640.
+            The key point: motion detection and target tracking are calculated directly on the
+            microcontroller, while the browser only renders the result.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="https://github.com/kiril4a/esp8266-OV2640-stream-tracking" data-i18n="project.github">Open GitHub</a>
+          </div>
+        </div>
+        <div class="project-hero-media">
+          <img src="../assets/esp8266-tracking-demo.png" alt="ESP8266 tracking web interface demo" data-i18n-alt="project.esp.photo">
+        </div>
+      </section>
+
+      <section class="project-layout">
+        <article class="project-main reveal">
+          <h2 data-i18n="project.what">What it proves</h2>
+          <p data-i18n="project.esp.proves">
+            This project proves that useful computer-vision logic can run on very constrained
+            hardware when the algorithm is shaped around the device. ESP8266 does not have
+            room for neural networks or heavy classical CV pipelines, so the system uses
+            grayscale frame differencing, bounding-box extraction, and ROI-based tracking.
+          </p>
+          <p data-i18n="project.esp.proves2">
+            The camera can operate in a regular JPEG streaming mode, but detection and
+            tracking switch it into YUV422 capture. The firmware extracts only the Y channel,
+            compares the current and previous frames, filters noise and lighting changes,
+            then sends a compact binary response to the web interface.
+          </p>
+
+          <h2 data-i18n="project.esp.modes.title">Operating modes</h2>
+          <div class="feature-list">
+            <div>
+              <strong data-i18n="project.esp.mode1.title">JPEG stream</strong>
+              <p data-i18n="project.esp.mode1.text">Multipart camera stream with selectable 160x120, 320x240, and 640x480 resolutions.</p>
+            </div>
+            <div>
+              <strong data-i18n="project.esp.mode2.title">Motion detection</strong>
+              <p data-i18n="project.esp.mode2.text">ESP8266 scans the grayscale frame, detects changed pixels, and returns a bounding box around movement.</p>
+            </div>
+            <div>
+              <strong data-i18n="project.esp.mode3.title">Target tracking</strong>
+              <p data-i18n="project.esp.mode3.text">The user clicks a target in the browser; ESP8266 tracks only a local ROI around that object.</p>
+            </div>
+          </div>
+
+          <h2 data-i18n="project.esp.algorithm.title">Algorithm design</h2>
+          <p data-i18n="project.esp.algorithm.text">
+            The firmware captures a 160x120 YUV422 frame and keeps only brightness values,
+            so each analysis frame is 19,200 bytes. Two static frame buffers avoid heap
+            fragmentation during continuous operation. Motion is detected by comparing
+            brightness differences against a threshold, then collecting min/max coordinates
+            into a bounding box.
+          </p>
+          <p data-i18n="project.esp.algorithm.text2">
+            To reduce false positives, the algorithm ignores small movement below a pixel
+            count threshold and also rejects global lighting changes when too much of the
+            frame changes at once. Tracking mode narrows the scan to a padded region around
+            the previous target position, which lowers CPU load and keeps the box from
+            jumping to unrelated background motion.
+          </p>
+
+          <h2 data-i18n="project.esp.protocol.title">Data protocol</h2>
+          <p data-i18n="project.esp.protocol.text">
+            Instead of sending slow JSON for every frame, the ESP returns a custom binary
+            packet: an 8-byte header with motion state, changed-pixel count, bounding-box
+            validity and coordinates, followed by 19,200 bytes of grayscale pixels. The
+            browser decodes the packet with Uint8Array and draws the frame and boxes on
+            an HTML5 Canvas.
+          </p>
+
+          <h2 data-i18n="project.responsibilities">Core responsibilities</h2>
+          <ul>
+            <li data-i18n="project.esp.li1">Implemented ESP8266 SoftAP web server with stream, mode, detection, and target endpoints.</li>
+            <li data-i18n="project.esp.li2">Integrated ArduCAM OV2640 over SPI/I2C and switched between JPEG and YUV capture paths.</li>
+            <li data-i18n="project.esp.li3">Built motion detection using frame differencing, thresholds, bounding boxes, and lighting-change filtering.</li>
+            <li data-i18n="project.esp.li4">Implemented ROI tracking driven by user clicks from the browser Canvas interface.</li>
+            <li data-i18n="project.esp.li5">Packed detection results and grayscale pixels into a compact binary response for faster rendering.</li>
+          </ul>
+        </article>
+        <aside class="project-side reveal">
+          <h2 data-i18n="project.stack">Stack</h2>
+          <div class="stack-cloud compact">
+            <span>ESP8266</span>
+            <span>C++</span>
+            <span>Arduino IDE</span>
+            <span>OV2640</span>
+            <span>ArduCAM</span>
+            <span>Wi-Fi</span>
+            <span>SoftAP</span>
+            <span>SPI</span>
+            <span>I2C</span>
+            <span>YUV422</span>
+            <span>HTML5 Canvas</span>
+            <span>Computer Vision</span>
+            <span>Embedded Systems</span>
+          </div>
+          <div class="project-facts">
+            <div>
+              <strong>160x120</strong>
+              <span data-i18n="project.esp.fact1">analysis frame</span>
+            </div>
+            <div>
+              <strong>19,200 B</strong>
+              <span data-i18n="project.esp.fact2">Y-channel buffer</span>
+            </div>
+            <div>
+              <strong>8 B</strong>
+              <span data-i18n="project.esp.fact3">binary header</span>
+            </div>
+            <div>
+              <strong>GPIO 16</strong>
+              <span data-i18n="project.esp.fact4">camera CS pin</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </body>
+</html>
