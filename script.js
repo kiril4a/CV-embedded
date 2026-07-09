@@ -18,7 +18,7 @@ const contactStatus = document.querySelector("[data-contact-status]");
 const SUPABASE_URL = "https://zvzpuynjkxajzajkjcjx.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2enB1eW5qa3hhanphamtqY2p4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMjE4NzEsImV4cCI6MjA5ODU5Nzg3MX0.5q011I_yP_m2LvBBgb9KPunhujozkXdeDkmWXiHPU7o";
 const CONTACT_TABLE = "contact_messages";
-const VISIT_FUNCTION = "track-visit";
+const VISIT_FUNCTION = "site-ping";
 
 if (window.location.pathname.endsWith("/index.html")) {
   const cleanPath = window.location.pathname.replace(/index\.html$/, "");

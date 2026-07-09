@@ -8,3 +8,4 @@ supabase/functions/daily-visit-report/index.ts
 supabase/functions/track-visit/index.ts
 SUPABASE_VISIT_ANALYTICS_SETUP.md
 supabase/config.toml
+supabase/functions/site-ping/index.ts
