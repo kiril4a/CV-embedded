@@ -283,26 +283,17 @@ const trackVisit = () => {
     session_id: sessionId
   };
 
-  const body = JSON.stringify(payload);
-  const url = `${SUPABASE_URL.replace(/\/$/, "")}/functions/v1/${VISIT_FUNCTION}`;
-
-  if (navigator.sendBeacon) {
-    const blob = new Blob([body], { type: "text/plain" });
-    navigator.sendBeacon(url, blob);
-    return;
-  }
-
-  fetch(url, {
-    method: "POST",
-    mode: "no-cors",
-    headers: {
-      "Content-Type": "text/plain"
-    },
-    body,
-    keepalive: true
-  }).catch((error) => {
-    console.warn("Visit tracking failed", error);
+  const url = new URL(`${SUPABASE_URL.replace(/\/$/, "")}/functions/v1/${VISIT_FUNCTION}`);
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value !== null && value !== undefined) {
+      url.searchParams.set(key, String(value));
+    }
   });
+  url.searchParams.set("t", String(Date.now()));
+
+  const beacon = new Image();
+  beacon.referrerPolicy = "strict-origin-when-cross-origin";
+  beacon.src = url.toString();
 };
 
 trackVisit();
