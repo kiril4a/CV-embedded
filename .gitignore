@@ -3,3 +3,7 @@ supabase-contact-email-webhook.sql
 supabase/functions/contact-email/index.ts
 supabase-email-debug.sql
 supabase/functions/clever-responder/index.ts
+supabase-visit-analytics.sql
+supabase/functions/daily-visit-report/index.ts
+supabase/functions/track-visit/index.ts
+SUPABASE_VISIT_ANALYTICS_SETUP.md

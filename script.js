@@ -18,6 +18,7 @@ const contactStatus = document.querySelector("[data-contact-status]");
 const SUPABASE_URL = "https://zvzpuynjkxajzajkjcjx.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2enB1eW5qa3hhanphamtqY2p4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMjE4NzEsImV4cCI6MjA5ODU5Nzg3MX0.5q011I_yP_m2LvBBgb9KPunhujozkXdeDkmWXiHPU7o";
 const CONTACT_TABLE = "contact_messages";
+const VISIT_FUNCTION = "track-visit";
 
 if (window.location.pathname.endsWith("/index.html")) {
   const cleanPath = window.location.pathname.replace(/index\.html$/, "");
@@ -256,6 +257,52 @@ langButtons.forEach((button) => {
 });
 
 applyLanguage(getStoredLanguage());
+
+const trackVisit = () => {
+  if (!SUPABASE_URL) {
+    return;
+  }
+
+  const storageKey = "site-visitor-session";
+  let sessionId = localStorage.getItem(storageKey);
+  if (!sessionId) {
+    sessionId = window.crypto?.randomUUID
+      ? window.crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    localStorage.setItem(storageKey, sessionId);
+  }
+
+  const payload = {
+    page_path: window.location.pathname,
+    page_url: window.location.href,
+    referrer: document.referrer || null,
+    language: navigator.language || null,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || null,
+    screen_width: window.screen?.width ?? null,
+    screen_height: window.screen?.height ?? null,
+    session_id: sessionId
+  };
+
+  const body = JSON.stringify(payload);
+  const url = `${SUPABASE_URL.replace(/\/$/, "")}/functions/v1/${VISIT_FUNCTION}`;
+
+  if (navigator.sendBeacon) {
+    const blob = new Blob([body], { type: "application/json" });
+    navigator.sendBeacon(url, blob);
+    return;
+  }
+
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body,
+    keepalive: true
+  }).catch(() => {});
+};
+
+trackVisit();
 
 const getTranslation = (key) => {
   const language = document.documentElement.lang === "uk" ? "uk" : "en";
