@@ -287,19 +287,22 @@ const trackVisit = () => {
   const url = `${SUPABASE_URL.replace(/\/$/, "")}/functions/v1/${VISIT_FUNCTION}`;
 
   if (navigator.sendBeacon) {
-    const blob = new Blob([body], { type: "application/json" });
+    const blob = new Blob([body], { type: "text/plain" });
     navigator.sendBeacon(url, blob);
     return;
   }
 
   fetch(url, {
     method: "POST",
+    mode: "no-cors",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "text/plain"
     },
     body,
     keepalive: true
-  }).catch(() => {});
+  }).catch((error) => {
+    console.warn("Visit tracking failed", error);
+  });
 };
 
 trackVisit();
