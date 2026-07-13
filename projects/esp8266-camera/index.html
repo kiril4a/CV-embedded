@@ -1,12 +1,12 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="ESP8266 camera streaming and object tracking project by Kyrylo Matiushenko." data-i18n-content="meta.esp.description">
-    <title>ESP8266 Vision | Kyrylo Matiushenko</title>
-    <link rel="stylesheet" href="../../styles.css">
-    <script defer src="../../script.js?v=20260709-site-ping"></script>
+    <meta name="description" content="Embedded vision systems built with STM32, ESP32, NanoPi, OV2640, and ESP8266 by Kyrylo Matiushenko." data-i18n-content="meta.esp.description">
+    <title>Vision Systems | Kyrylo Matiushenko</title>
+    <link rel="stylesheet" href="../../styles.css?v=20260713-vision-details">
+    <script defer src="../../script.js?v=20260713-vision-details"></script>
   </head>
   <body data-page="esp">
     <header class="site-header">
@@ -18,7 +18,7 @@
       </button>
       <nav id="main-navigation" class="top-nav" aria-label="Main navigation" data-i18n-aria="aria.nav">
         <a href="../../" data-i18n="nav.about">About</a>
-        <a href="../esp8266-camera/" aria-current="page" data-i18n="nav.esp">ESP8266 Vision</a>
+        <a href="../esp8266-camera/" aria-current="page" data-i18n="nav.esp">Vision Systems</a>
         <a href="../ev-conversion/" data-i18n="nav.ev">EV Control</a>
         <a href="../ai-navigation/" data-i18n="nav.ai">AI Navigation</a>
         <a href="../../contact/" data-i18n="nav.contact">Contact</a>
@@ -30,128 +30,257 @@
       </nav>
     </header>
 
-    <main class="project-page">
-      <section class="project-hero project-hero-with-media reveal">
-        <div class="project-hero-copy">
-          <p class="eyebrow" data-i18n="project.esp.eyebrow">Project 01</p>
-          <h1 data-i18n="project.esp.title">ESP8266 Camera Streaming & Object Tracking</h1>
-          <p class="lead" data-i18n="project.esp.lead">
-            A compact surveillance and tracking system built around ESP8266 and ArduCAM OV2640.
-            The key point: motion detection and target tracking are calculated directly on the
-            microcontroller, while the browser only renders the result.
-          </p>
-          <div class="hero-actions">
-            <a class="button primary" href="https://github.com/kiril4a/esp8266-OV2640-stream-tracking" data-i18n="project.github">Open GitHub</a>
-          </div>
+    <main class="project-page vision-project-page">
+      <section class="vision-selector-wrap reveal" aria-labelledby="vision-selector-title">
+        <div class="vision-selector-copy">
+          <p class="eyebrow" data-i18n="project.vision.eyebrow">Embedded vision evolution</p>
+          <h1 id="vision-selector-title" data-i18n="project.vision.title">One branch, two generations.</h1>
+          <p data-i18n="project.vision.lead">This branch shows how the original single-board ESP8266 experiment evolved into a distributed edge-vision system. Switch between both generations to compare their architecture, processing limits, and responsibilities.</p>
+          <p class="vision-selector-note" data-i18n="project.vision.note">The STM32 generation is shown first because it is the current engineering baseline; the ESP8266 version remains available as the prototype that established the capture, motion-detection, and tracking concepts.</p>
         </div>
-        <div class="project-hero-media">
-          <img src="../../assets/esp8266-tracking-demo.png" alt="ESP8266 tracking web interface demo" data-i18n-alt="project.esp.photo">
+        <div class="vision-switch" role="tablist" aria-label="Choose vision project" data-i18n-aria="project.vision.selector">
+          <span class="vision-switch-droplet" aria-hidden="true"></span>
+          <button type="button" role="tab" aria-selected="true" aria-controls="vision-stm32" id="tab-stm32" data-project-variant="stm32">
+            <small data-i18n="project.vision.current">Current system</small>
+            <span>STM32 · ESP32 · NanoPi</span>
+          </button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="vision-esp8266" id="tab-esp8266" data-project-variant="esp8266" tabindex="-1">
+            <small data-i18n="project.vision.prototype">First prototype</small>
+            <span>ESP8266 · OV2640</span>
+          </button>
         </div>
       </section>
 
-      <section class="project-layout">
-        <article class="project-main reveal">
-          <h2 data-i18n="project.what">What it proves</h2>
-          <p data-i18n="project.esp.proves">
-            This project proves that useful computer-vision logic can run on very constrained
-            hardware when the algorithm is shaped around the device. ESP8266 does not have
-            room for neural networks or heavy classical CV pipelines, so the system uses
-            grayscale frame differencing, bounding-box extraction, and ROI-based tracking.
-          </p>
-          <p data-i18n="project.esp.proves2">
-            The camera can operate in a regular JPEG streaming mode, but detection and
-            tracking switch it into YUV422 capture. The firmware extracts only the Y channel,
-            compares the current and previous frames, filters noise and lighting changes,
-            then sends a compact binary response to the web interface.
-          </p>
+      <div class="vision-panels" data-project-panels>
+        <section class="project-variant is-active" id="vision-stm32" role="tabpanel" aria-labelledby="tab-stm32" data-project-panel="stm32">
+          <section class="project-hero reveal">
+            <div class="project-hero-copy">
+              <p class="eyebrow" data-i18n="project.stm32.eyebrow">Project 01 · Current generation</p>
+              <h2 class="project-display-title" data-i18n="project.stm32.title">STM32–ESP32–NanoPi Vision System</h2>
+              <p class="lead" data-i18n="project.stm32.lead">A distributed edge-vision system that turns an OV2640 camera feed into an operator-ready MJPEG dashboard with motion analysis, neural inference, and interactive object tracking. The design separates deterministic camera capture, wireless transport, and NPU perception so each platform handles the work that matches its resources.</p>
+              <p class="project-context" data-i18n="project.stm32.context">STM32H503 controls ArduCAM and transports frames over SPI. ESP32 receives and buffers those frames, performs lightweight Algorithm-mode motion detection, and forwards the stream through Wi-Fi/TCP. NanoPi R5S then runs motion segmentation and YOLOv5s INT8 inference on the RK3568 NPU, maintains masks and track IDs, and serves the only web interface in the system.</p>
+              <div class="npu-performance">
+                <strong>60 FPS · 0.8 TOPS</strong>
+                <p data-i18n="project.stm32.performance">The neural-network inference path can process up to 60 frames per second at 0.8 TOPS. This figure describes model-processing capacity; end-to-end camera FPS still depends on capture resolution, JPEG size, SPI, Wi-Fi, and the selected operating mode.</p>
+              </div>
+              <div class="hero-actions">
+                <a class="button primary" href="https://github.com/kiril4a/stm32_esp32_nanopi_ov2640_CV" data-i18n="project.github">Open GitHub</a>
+              </div>
+            </div>
+          </section>
 
-          <h2 data-i18n="project.esp.modes.title">Operating modes</h2>
-          <div class="feature-list">
-            <div>
-              <strong data-i18n="project.esp.mode1.title">JPEG stream</strong>
-              <p data-i18n="project.esp.mode1.text">Multipart camera stream with selectable 160x120, 320x240, and 640x480 resolutions.</p>
+          <section class="vision-architecture reveal" aria-labelledby="architecture-title">
+            <div class="architecture-heading">
+              <p class="eyebrow" data-i18n="project.stm32.architecture.eyebrow">Data path</p>
+              <h2 id="architecture-title" data-i18n="project.stm32.architecture.title">Processing is split across the hardware that fits it best.</h2>
             </div>
-            <div>
-              <strong data-i18n="project.esp.mode2.title">Motion detection</strong>
-              <p data-i18n="project.esp.mode2.text">ESP8266 scans the grayscale frame, detects changed pixels, and returns a bounding box around movement.</p>
+            <div class="architecture-flow">
+              <div class="architecture-node">
+                <span class="node-number">01</span>
+                <strong>OV2640 / ArduCAM</strong>
+                <small data-i18n="project.stm32.node1">Frame capture</small>
+              </div>
+              <span class="architecture-link" aria-hidden="true">→</span>
+              <div class="architecture-node">
+                <span class="node-number">02</span>
+                <strong>STM32H503</strong>
+                <small data-i18n="project.stm32.node2">ThreadX camera transport</small>
+              </div>
+              <span class="architecture-link" aria-hidden="true">→</span>
+              <div class="architecture-node">
+                <span class="node-number">03</span>
+                <strong>ESP32-WROOM-32U</strong>
+                <small data-i18n="project.stm32.node3">SPI ingest · motion analysis</small>
+              </div>
+              <span class="architecture-link" aria-hidden="true">→</span>
+              <div class="architecture-node is-accent">
+                <span class="node-number">04</span>
+                <strong>NanoPi R5S</strong>
+                <small data-i18n="project.stm32.node4">RKNN inference · tracking · web UI</small>
+              </div>
             </div>
-            <div>
-              <strong data-i18n="project.esp.mode3.title">Target tracking</strong>
-              <p data-i18n="project.esp.mode3.text">The user clicks a target in the browser; ESP8266 tracks only a local ROI around that object.</p>
-            </div>
-          </div>
+          </section>
 
-          <h2 data-i18n="project.esp.algorithm.title">Algorithm design</h2>
-          <p data-i18n="project.esp.algorithm.text">
-            The firmware captures a 160x120 YUV422 frame and keeps only brightness values,
-            so each analysis frame is 19,200 bytes. Two static frame buffers avoid heap
-            fragmentation during continuous operation. Motion is detected by comparing
-            brightness differences against a threshold, then collecting min/max coordinates
-            into a bounding box.
-          </p>
-          <p data-i18n="project.esp.algorithm.text2">
-            To reduce false positives, the algorithm ignores small movement below a pixel
-            count threshold and also rejects global lighting changes when too much of the
-            frame changes at once. Tracking mode narrows the scan to a padded region around
-            the previous target position, which lowers CPU load and keeps the box from
-            jumping to unrelated background motion.
-          </p>
+          <section class="project-layout">
+            <article class="project-main reveal">
+              <h2 data-i18n="project.what">What it proves</h2>
+              <p data-i18n="project.stm32.proves">The project develops the first camera prototype into a complete multi-board product architecture. Real-time work is divided between microcontroller firmware, a Wi-Fi transport bridge, and an embedded Linux NPU service instead of forcing every task onto one constrained device.</p>
+              <p data-i18n="project.stm32.proves2">STM32 captures and transports OV2640 frames, ESP32 handles SPI reception and Algorithm-mode motion detection, while NanoPi is the only web server and runs neural motion segmentation, YOLOv5s INT8 RKNN inference, masks, and persistent track IDs.</p>
 
-          <h2 data-i18n="project.esp.protocol.title">Data protocol</h2>
-          <p data-i18n="project.esp.protocol.text">
-            Instead of sending slow JSON for every frame, the ESP returns a custom binary
-            packet: an 8-byte header with motion state, changed-pixel count, bounding-box
-            validity and coordinates, followed by 19,200 bytes of grayscale pixels. The
-            browser decodes the packet with Uint8Array and draws the frame and boxes on
-            an HTML5 Canvas.
-          </p>
+              <h2 data-i18n="project.stm32.layers.title">System layers</h2>
+              <div class="feature-list">
+                <div>
+                  <strong data-i18n="project.stm32.layer1.title">Deterministic capture</strong>
+                  <p data-i18n="project.stm32.layer1.text">STM32H503 firmware uses STM32 HAL and ThreadX to control ArduCAM and move frames over SPI.</p>
+                </div>
+                <div>
+                  <strong data-i18n="project.stm32.layer2.title">Transport and motion</strong>
+                  <p data-i18n="project.stm32.layer2.text">ESP32 stores incoming frames, performs lightweight motion analysis, and forwards the stream over Wi-Fi/TCP.</p>
+                </div>
+                <div>
+                  <strong data-i18n="project.stm32.layer3.title">NPU perception</strong>
+                  <p data-i18n="project.stm32.layer3.text">NanoPi R5S serves the dashboard and performs RKNN inference, motion segmentation, masks, and interactive tracking.</p>
+                </div>
+              </div>
 
-          <h2 data-i18n="project.responsibilities">Core responsibilities</h2>
-          <ul>
-            <li data-i18n="project.esp.li1">Implemented ESP8266 SoftAP web server with stream, mode, detection, and target endpoints.</li>
-            <li data-i18n="project.esp.li2">Integrated ArduCAM OV2640 over SPI/I2C and switched between JPEG and YUV capture paths.</li>
-            <li data-i18n="project.esp.li3">Built motion detection using frame differencing, thresholds, bounding boxes, and lighting-change filtering.</li>
-            <li data-i18n="project.esp.li4">Implemented ROI tracking driven by user clicks from the browser Canvas interface.</li>
-            <li data-i18n="project.esp.li5">Packed detection results and grayscale pixels into a compact binary response for faster rendering.</li>
-          </ul>
-        </article>
-        <aside class="project-side reveal">
-          <h2 data-i18n="project.stack">Stack</h2>
-          <div class="stack-cloud compact">
-            <span>ESP8266</span>
-            <span>C++</span>
-            <span>Arduino IDE</span>
-            <span>OV2640</span>
-            <span>ArduCAM</span>
-            <span>Wi-Fi</span>
-            <span>SoftAP</span>
-            <span>SPI</span>
-            <span>I2C</span>
-            <span>YUV422</span>
-            <span>HTML5 Canvas</span>
-            <span>Computer Vision</span>
-            <span>Embedded Systems</span>
-          </div>
-          <div class="project-facts">
-            <div>
-              <strong>160x120</strong>
-              <span data-i18n="project.esp.fact1">analysis frame</span>
+              <h2 data-i18n="project.stm32.hub.title">STM32 as an expandable hardware hub</h2>
+              <p data-i18n="project.stm32.hub.text">STM32H503 is not limited to forwarding camera data. It is the deterministic hardware hub of the system: it owns sensor initialization, real-time capture, peripheral timing, diagnostics, and the gateway toward ESP32. The current baseline connects OV2640 through ArduCAM, but the same architecture can be extended with additional sensors and control hardware without moving time-critical I/O into the networking layer.</p>
+              <div class="feature-list hub-list">
+                <div>
+                  <strong data-i18n="project.stm32.hub1.title">Peripheral expansion</strong>
+                  <p data-i18n="project.stm32.hub1.text">Additional IMUs, environmental sensors, encoders, distance sensors, relays, or actuators can be integrated through available SPI, I²C, UART, GPIO, ADC, and PWM peripherals.</p>
+                </div>
+                <div>
+                  <strong data-i18n="project.stm32.hub2.title">Real-time isolation</strong>
+                  <p data-i18n="project.stm32.hub2.text">ThreadX tasks keep capture and hardware timing independent from Wi-Fi quality, Linux load, and neural-network latency.</p>
+                </div>
+                <div>
+                  <strong data-i18n="project.stm32.hub3.title">One upstream interface</strong>
+                  <p data-i18n="project.stm32.hub3.text">New devices can be normalized into the STM32 application layer and sent upstream without requiring every sensor to implement networking.</p>
+                </div>
+              </div>
+
+              <h2 data-i18n="project.stm32.motion.title">How motion detection works on ESP32</h2>
+              <p data-i18n="project.stm32.motion.text">The detector runs as a dedicated FreeRTOS task on core 1 and is active only in Algorithm mode. Processing is rate-limited so JPEG decoding and image analysis never starve SPI reception or the Wi-Fi transport task.</p>
+              <ol class="processing-pipeline">
+                <li><strong>01</strong><span data-i18n="project.stm32.motion1">The newest JPEG is decoded and reduced to an 80×60 grayscale plane.</span></li>
+                <li><strong>02</strong><span data-i18n="project.stm32.motion2">Gaussian smoothing suppresses JPEG noise; average brightness delta compensates for global exposure changes.</span></li>
+                <li><strong>03</strong><span data-i18n="project.stm32.motion3">The current and previous frames are compared with an absolute threshold of 18 to build a binary motion mask.</span></li>
+                <li><strong>04</strong><span data-i18n="project.stm32.motion4">Isolated pixels are removed and one-pixel gaps are bridged without allocating another full-size mask.</span></li>
+                <li><strong>05</strong><span data-i18n="project.stm32.motion5">An 8-connected flood fill extracts components of at least eight pixels and rejects near-full-frame shake or exposure transitions.</span></li>
+                <li><strong>06</strong><span data-i18n="project.stm32.motion6">Nearby regions are merged, sorted by changed-pixel count, and converted back into source-image coordinates; up to four boxes are retained.</span></li>
+                <li><strong>07</strong><span data-i18n="project.stm32.motion7">Tracking scores candidates by predicted center, luminance, area, and aspect ratio; velocity prediction keeps a target alive through short detection gaps.</span></li>
+              </ol>
+
+              <h2 data-i18n="project.stm32.protocols.title">Data-transfer protocols</h2>
+              <div class="feature-list protocol-list">
+                <div>
+                  <strong data-i18n="project.stm32.protocol1.title">Camera → STM32</strong>
+                  <p data-i18n="project.stm32.protocol1.text">I²C1 configures OV2640 registers; SPI1 reads the JPEG data from the ArduCAM FIFO.</p>
+                </div>
+                <div>
+                  <strong data-i18n="project.stm32.protocol2.title">STM32 → ESP32</strong>
+                  <p data-i18n="project.stm32.protocol2.text">SPI2 mode 0 plus a READY GPIO uses the binary CAM1 protocol: a 20-byte header, START/DATA/END packets, chunks up to 1536 bytes, offsets, frame IDs, and control query/reply messages.</p>
+                </div>
+                <div>
+                  <strong data-i18n="project.stm32.protocol3.title">ESP32 → NanoPi</strong>
+                  <p data-i18n="project.stm32.protocol3.text">A persistent Wi-Fi/TCP connection to port 5000 carries NPI1 frames: a 20-byte binary header, JPEG payload, optional UTF-8 JSON metadata, and a compact control response for mode, resolution, and tracking.</p>
+                </div>
+                <div>
+                  <strong data-i18n="project.stm32.protocol4.title">NanoPi → Browser</strong>
+                  <p data-i18n="project.stm32.protocol4.text">HTTP on port 8080 provides the dashboard, REST endpoints, status JSON, snapshots, and multipart MJPEG streaming in source, 800, 640, or 320 pixel quality profiles.</p>
+                </div>
+              </div>
+
+              <h2 data-i18n="project.stm32.features.title">Software features and reliability decisions</h2>
+              <div class="feature-list software-feature-list">
+                <div>
+                  <strong data-i18n="project.stm32.feature1.title">Fixed-memory MCU path</strong>
+                  <p data-i18n="project.stm32.feature1.text">STM32 circulates two fixed chunk objects and never stores a full JPEG. ESP32 uses three guarded 32 KiB frame slots, preventing a published frame from being overwritten while TCP or the detector reads it.</p>
+                </div>
+                <div>
+                  <strong data-i18n="project.stm32.feature2.title">Newest-frame scheduling</strong>
+                  <p data-i18n="project.stm32.feature2.text">NanoPi publishes every valid frame immediately, while the NPU worker replaces stale pending work instead of building a queue. The result prioritizes low latency over processing every frame.</p>
+                </div>
+                <div>
+                  <strong data-i18n="project.stm32.feature3.title">Three processing modes</strong>
+                  <p data-i18n="project.stm32.feature3.text">Raw mode streams video, Algorithm mode adds ESP32 motion boxes, and Neural mode adds NanoPi segmentation, YOLO detections, masks, classes, confidence values, and track IDs.</p>
+                </div>
+                <div>
+                  <strong data-i18n="project.stm32.feature4.title">Validation and recovery</strong>
+                  <p data-i18n="project.stm32.feature4.text">Magic values, lengths, offsets, bounds, and JPEG markers are validated. Oversized frames trigger a lower-resolution fallback; Wi-Fi and TCP reconnect automatically, and systemd restarts the NanoPi service.</p>
+                </div>
+              </div>
+
+              <h2 data-i18n="project.responsibilities">Core responsibilities</h2>
+              <ul>
+                <li data-i18n="project.stm32.li1">Built STM32Cube/ThreadX firmware for camera initialization, capture, diagnostics, and SPI transport.</li>
+                <li data-i18n="project.stm32.li2">Implemented production PlatformIO firmware for ESP32 frame reception, state management, motion detection, and NanoPi transport.</li>
+                <li data-i18n="project.stm32.li3">Developed the NanoPi Linux service with an HTTP/MJPEG dashboard, detector abstraction, motion segmentation, and object tracking.</li>
+                <li data-i18n="project.stm32.li4">Prepared the YOLOv5s ReLU INT8 RKNN pipeline for the RK3568 NPU at 320×320 input resolution.</li>
+                <li data-i18n="project.stm32.li5">Documented architecture, interfaces, deployment, operations, verification, security, and compliance in English and Ukrainian.</li>
+              </ul>
+            </article>
+            <aside class="project-side reveal">
+              <h2 data-i18n="project.stack">Stack</h2>
+              <div class="stack-cloud compact">
+                <span>STM32H503</span><span>ThreadX</span><span>ESP32</span><span>PlatformIO</span>
+                <span>NanoPi R5S</span><span>RK3568 NPU</span><span>YOLOv5</span><span>RKNN</span>
+                <span>C/C++</span><span>Python</span><span>SPI</span><span>Wi-Fi/TCP</span>
+                <span>MJPEG</span><span>OpenCV</span><span>systemd</span><span>pytest</span>
+              </div>
+              <div class="project-facts">
+                <div><strong>13 / 13</strong><span data-i18n="project.stm32.fact1">NanoPi tests passing</span></div>
+                <div><strong>320 × 320</strong><span data-i18n="project.stm32.fact2">INT8 model input</span></div>
+                <div><strong>18.6%</strong><span data-i18n="project.stm32.fact3">ESP static RAM</span></div>
+                <div><strong>39.5%</strong><span data-i18n="project.stm32.fact4">ESP application flash</span></div>
+                <div><strong>60 FPS</strong><span data-i18n="project.stm32.fact5">neural inference at 0.8 TOPS</span></div>
+              </div>
+            </aside>
+          </section>
+        </section>
+
+        <section class="project-variant" id="vision-esp8266" role="tabpanel" aria-labelledby="tab-esp8266" data-project-panel="esp8266" hidden>
+          <section class="project-hero project-hero-with-media">
+            <div class="project-hero-copy">
+              <p class="eyebrow" data-i18n="project.esp.eyebrow">Project 01 · First prototype</p>
+              <h2 class="project-display-title" data-i18n="project.esp.title">ESP8266 Camera Streaming & Object Tracking</h2>
+              <p class="lead" data-i18n="project.esp.lead">A compact surveillance and tracking system built around ESP8266 and ArduCAM OV2640. Motion detection and target tracking run directly on the microcontroller, while the browser renders the result.</p>
+              <div class="hero-actions">
+                <a class="button primary" href="https://github.com/kiril4a/esp8266-OV2640-stream-tracking" data-i18n="project.github">Open GitHub</a>
+              </div>
             </div>
-            <div>
-              <strong>19,200 B</strong>
-              <span data-i18n="project.esp.fact2">Y-channel buffer</span>
+            <div class="project-hero-media">
+              <img src="../../assets/esp8266-tracking-demo.png" alt="ESP8266 tracking web interface demo" data-i18n-alt="project.esp.photo">
             </div>
-            <div>
-              <strong>8 B</strong>
-              <span data-i18n="project.esp.fact3">binary header</span>
-            </div>
-            <div>
-              <strong>GPIO 16</strong>
-              <span data-i18n="project.esp.fact4">camera CS pin</span>
-            </div>
-          </div>
-        </aside>
-      </section>
+          </section>
+
+          <section class="project-layout">
+            <article class="project-main">
+              <h2 data-i18n="project.what">What it proves</h2>
+              <p data-i18n="project.esp.proves">This project proves that useful computer-vision logic can run on very constrained hardware when the algorithm is shaped around the device. It uses grayscale frame differencing, bounding-box extraction, and ROI-based tracking.</p>
+              <p data-i18n="project.esp.proves2">JPEG streaming is used for viewing; detection and tracking switch the camera to YUV422, extract the Y channel, filter noise and lighting changes, and send a compact binary response to the web interface.</p>
+
+              <h2 data-i18n="project.esp.modes.title">Operating modes</h2>
+              <div class="feature-list">
+                <div><strong data-i18n="project.esp.mode1.title">JPEG stream</strong><p data-i18n="project.esp.mode1.text">Multipart camera stream with selectable 160x120, 320x240, and 640x480 resolutions.</p></div>
+                <div><strong data-i18n="project.esp.mode2.title">Motion detection</strong><p data-i18n="project.esp.mode2.text">ESP8266 scans the grayscale frame, detects changed pixels, and returns a bounding box around movement.</p></div>
+                <div><strong data-i18n="project.esp.mode3.title">Target tracking</strong><p data-i18n="project.esp.mode3.text">The user clicks a target in the browser; ESP8266 tracks only a local ROI around that object.</p></div>
+              </div>
+
+              <h2 data-i18n="project.esp.algorithm.title">Algorithm design</h2>
+              <p data-i18n="project.esp.algorithm.text">The firmware captures a 160x120 YUV422 frame and keeps only brightness values, so each analysis frame is 19,200 bytes. Two static frame buffers avoid heap fragmentation during continuous operation.</p>
+              <p data-i18n="project.esp.algorithm.text2">Small movement below the pixel threshold is ignored, global lighting changes are rejected, and tracking narrows the search to a padded region around the previous target position.</p>
+
+              <h2 data-i18n="project.esp.protocol.title">Data protocol</h2>
+              <p data-i18n="project.esp.protocol.text">A custom binary packet carries an 8-byte detection header followed by 19,200 bytes of grayscale pixels. The browser decodes the packet with Uint8Array and draws the frame and boxes on HTML5 Canvas.</p>
+
+              <h2 data-i18n="project.responsibilities">Core responsibilities</h2>
+              <ul>
+                <li data-i18n="project.esp.li1">Implemented ESP8266 SoftAP web server with stream, mode, detection, and target endpoints.</li>
+                <li data-i18n="project.esp.li2">Integrated ArduCAM OV2640 over SPI/I2C and switched between JPEG and YUV capture paths.</li>
+                <li data-i18n="project.esp.li3">Built motion detection using frame differencing, thresholds, bounding boxes, and lighting-change filtering.</li>
+                <li data-i18n="project.esp.li4">Implemented ROI tracking driven by user clicks from the browser Canvas interface.</li>
+                <li data-i18n="project.esp.li5">Packed detection results and grayscale pixels into a compact binary response for faster rendering.</li>
+              </ul>
+            </article>
+            <aside class="project-side">
+              <h2 data-i18n="project.stack">Stack</h2>
+              <div class="stack-cloud compact">
+                <span>ESP8266</span><span>C++</span><span>Arduino IDE</span><span>OV2640</span>
+                <span>ArduCAM</span><span>Wi-Fi</span><span>SoftAP</span><span>SPI</span>
+                <span>I2C</span><span>YUV422</span><span>HTML5 Canvas</span><span>Computer Vision</span>
+              </div>
+              <div class="project-facts">
+                <div><strong>160x120</strong><span data-i18n="project.esp.fact1">analysis frame</span></div>
+                <div><strong>19,200 B</strong><span data-i18n="project.esp.fact2">Y-channel buffer</span></div>
+                <div><strong>8 B</strong><span data-i18n="project.esp.fact3">binary header</span></div>
+                <div><strong>GPIO 16</strong><span data-i18n="project.esp.fact4">camera CS pin</span></div>
+              </div>
+            </aside>
+          </section>
+        </section>
+      </div>
     </main>
   </body>
 </html>

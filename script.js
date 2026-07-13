@@ -49,12 +49,12 @@ const translations = {
     "aria.model": "Стилізована 3D-модель embedded controller board",
     "aria.profile": "Ключові факти профілю",
     "meta.home.description": "Kyrylo Matiushenko - embedded developer, який працює з IoT, robotics, computer vision та autonomous systems.",
-    "meta.esp.description": "ESP8266 camera streaming та object tracking project by Kyrylo Matiushenko.",
+    "meta.esp.description": "Embedded vision systems на STM32, ESP32, NanoPi, OV2640 та ESP8266 by Kyrylo Matiushenko.",
     "meta.ev.description": "Electric vehicle conversion та embedded control system by Kyrylo Matiushenko.",
     "meta.ai.description": "AI-assisted embedded navigation system by Kyrylo Matiushenko.",
     "meta.contact.description": "Зв'язок з Kyrylo Matiushenko для embedded, IoT та computer vision проєктів.",
     "nav.about": "Про мене",
-    "nav.esp": "ESP8266 Vision",
+    "nav.esp": "Vision Systems",
     "nav.ev": "EV Control",
     "nav.ai": "AI Navigation",
     "nav.contact": "Зв'язок",
@@ -82,6 +82,7 @@ const translations = {
     "home.projects.eyebrow": "Вибрані проєкти",
     "home.projects.title": "Три технічні історії з CV.",
     "home.projects.esp.text": "Real-time video streaming та object tracking на обмеженому embedded hardware.",
+    "home.projects.stm32.text": "Розподілені capture, transport, NPU inference та інтерактивний tracking на кількох embedded-платформах.",
     "home.projects.ev.text": "Honda Tact 24 EV conversion з RFID, RF communication, UART, PWM та motor control.",
     "home.projects.ai.text": "Embedded Linux і computer vision для навігації в середовищах без GPS.",
     "home.projects.open": "Відкрити проєкт",
@@ -107,33 +108,105 @@ const translations = {
     "contact.chip.storage": "Приватне зберігання",
     "contact.chip.access": "Тільки додавання",
     "contact.chip.reply": "Пряма відповідь",
-    "project.esp.eyebrow": "Проєкт 01",
-    "project.esp.title": "ESP8266 Camera Streaming & Object Tracking",
-    "project.esp.lead": "Компактна система відеоспостереження й tracking на базі ESP8266 та ArduCAM OV2640. Головна ідея: motion detection і target tracking рахуються прямо на мікроконтролері, а браузер лише візуалізує результат.",
-    "project.esp.photo": "Демо web interface для ESP8266 tracking",
-    "project.esp.proves": "Цей проєкт показує, що корисну computer-vision логіку можна запускати навіть на дуже обмеженому hardware, якщо алгоритм спроєктований під конкретний пристрій. ESP8266 не має ресурсу для нейромереж чи важких CV pipeline, тому система використовує grayscale frame differencing, bounding-box extraction і ROI-based tracking.",
-    "project.esp.proves2": "Камера може працювати у звичайному JPEG streaming mode, але detection і tracking перемикають її в YUV422 capture. Firmware витягує тільки Y channel, порівнює поточний і попередній кадри, фільтрує noise та lighting changes, а потім відправляє compact binary response у web interface.",
+    "project.vision.eyebrow": "Еволюція вбудованих систем комп'ютерного зору",
+    "project.vision.title": "Одна гілка, два покоління.",
+    "project.vision.lead": "Ця гілка показує, як початковий експеримент на одній платі ESP8266 перетворився на розподілену систему периферійного комп'ютерного зору. Перемикайся між двома поколіннями, щоб порівняти їхню архітектуру, обчислювальні обмеження та розподіл відповідальності.",
+    "project.vision.note": "Покоління STM32 показане першим, оскільки це актуальна інженерна версія. ESP8266 залишається доступним як прототип, у якому були закладені принципи захоплення кадрів, виявлення руху та супроводу об'єктів.",
+    "project.vision.selector": "Вибір проєкту комп'ютерного зору",
+    "project.vision.current": "Актуальна система",
+    "project.vision.prototype": "Перший прототип",
+    "project.stm32.eyebrow": "Проєкт 01 · Актуальне покоління",
+    "project.stm32.title": "Система комп'ютерного зору STM32–ESP32–NanoPi",
+    "project.stm32.lead": "Розподілена система периферійного комп'ютерного зору перетворює потік з OV2640 на готову для оператора панель MJPEG із аналізом руху, нейромережевим розпізнаванням та інтерактивним супроводом об'єктів. Архітектура розділяє детерміноване захоплення кадрів, бездротове передавання та обробку на NPU, тому кожна платформа виконує роботу відповідно до своїх ресурсів.",
+    "project.stm32.context": "STM32H503 керує ArduCAM і передає кадри через SPI. ESP32 приймає та буферизує їх, виконує полегшене виявлення руху в алгоритмічному режимі та пересилає потік через Wi-Fi/TCP. NanoPi R5S виконує сегментацію руху й інференс YOLOv5s INT8 на NPU RK3568, підтримує маски та ідентифікатори траєкторій і обслуговує єдиний вебінтерфейс системи.",
+    "project.stm32.performance": "Контур нейромережевого інференсу може обробляти до 60 кадрів за секунду за продуктивності 0,8 TOPS. Цей показник характеризує обчислювальну швидкість моделі; фактична частота всього відеоконвеєра також залежить від роздільності, розміру JPEG, SPI, Wi-Fi та вибраного режиму роботи.",
+    "project.stm32.architecture.eyebrow": "Шлях даних",
+    "project.stm32.architecture.title": "Обробка розподілена між платформами, які найкраще відповідають кожній задачі.",
+    "project.stm32.node1": "Захоплення кадру",
+    "project.stm32.node2": "Передавання даних камери під керуванням ThreadX",
+    "project.stm32.node3": "Приймання через SPI · аналіз руху",
+    "project.stm32.node4": "Інференс RKNN · супровід · вебінтерфейс",
+    "project.stm32.proves": "Проєкт розвиває перший прототип камери до повноцінної багатоплатної архітектури. Робота в реальному часі розподілена між прошивкою мікроконтролера, бездротовим транспортним вузлом та службою NPU під керуванням вбудованого Linux, тому одна обмежена платформа не повинна виконувати всі задачі одночасно.",
+    "project.stm32.proves2": "STM32 захоплює та передає кадри OV2640, ESP32 приймає їх через SPI й виявляє рух в алгоритмічному режимі, а NanoPi є єдиним вебсервером і виконує нейронну сегментацію руху, інференс YOLOv5s INT8 через RKNN, побудову масок та підтримку сталих ідентифікаторів траєкторій.",
+    "project.stm32.layers.title": "Рівні системи",
+    "project.stm32.layer1.title": "Детерміноване захоплення",
+    "project.stm32.layer1.text": "Прошивка STM32H503 використовує STM32 HAL і ThreadX для керування ArduCAM та передавання кадрів через SPI.",
+    "project.stm32.layer2.title": "Передавання й аналіз руху",
+    "project.stm32.layer2.text": "ESP32 зберігає отримані кадри, виконує полегшений аналіз руху та передає потік через Wi-Fi/TCP.",
+    "project.stm32.layer3.title": "Обробка на NPU",
+    "project.stm32.layer3.text": "NanoPi R5S обслуговує панель керування та виконує інференс RKNN, сегментацію руху, побудову масок й інтерактивний супровід.",
+    "project.stm32.hub.title": "STM32 як розширюваний апаратний хаб",
+    "project.stm32.hub.text": "STM32H503 не обмежується передаванням даних камери. Це детермінований апаратний хаб системи: він відповідає за ініціалізацію сенсорів, захоплення даних у реальному часі, часові параметри периферії, діагностику та шлюз до ESP32. У поточній версії під'єднано OV2640 через ArduCAM, але архітектуру можна розширювати додатковими сенсорами й виконавчими пристроями, не переносячи критичне за часом введення-виведення до мережевого рівня.",
+    "project.stm32.hub1.title": "Розширення периферії",
+    "project.stm32.hub1.text": "Через доступні SPI, I²C, UART, GPIO, ADC і PWM можна додати IMU, датчики середовища, енкодери, далекоміри, реле або приводи.",
+    "project.stm32.hub2.title": "Ізоляція реального часу",
+    "project.stm32.hub2.text": "Потоки ThreadX відокремлюють захоплення даних і роботу з апаратними інтерфейсами від якості Wi-Fi, навантаження Linux та затримки нейромережі.",
+    "project.stm32.hub3.title": "Єдиний вихідний інтерфейс",
+    "project.stm32.hub3.text": "Нові пристрої можна привести до спільного формату на прикладному рівні STM32 і передавати далі без реалізації мережевого стека в кожному сенсорі.",
+    "project.stm32.motion.title": "Як ESP32 виявляє рух",
+    "project.stm32.motion.text": "Детектор працює окремим завданням FreeRTOS на другому ядрі й активується лише в алгоритмічному режимі. Частота обробки обмежена навмисно, щоб декодування JPEG та аналіз зображення не заважали прийманню через SPI і передаванню через Wi-Fi.",
+    "project.stm32.motion1": "Найновіший JPEG-кадр декодується та зменшується до напівтонового зображення 80×60.",
+    "project.stm32.motion2": "Гаусове згладжування пригнічує артефакти JPEG, а середня зміна яскравості компенсує загальні зміни експозиції.",
+    "project.stm32.motion3": "Поточний і попередній кадри порівнюються з абсолютним порогом 18, унаслідок чого утворюється двійкова маска руху.",
+    "project.stm32.motion4": "Ізольовані пікселі видаляються, а однопіксельні розриви з'єднуються без виділення пам'яті під ще одну повнорозмірну маску.",
+    "project.stm32.motion5": "Заливка за вісьмома сусідами виділяє компоненти щонайменше з восьми пікселів і відкидає майже повнокадрове тремтіння камери або зміну експозиції.",
+    "project.stm32.motion6": "Сусідні області об'єднуються, сортуються за кількістю змінених пікселів і перераховуються в координати початкового зображення; зберігається до чотирьох рамок.",
+    "project.stm32.motion7": "Для супроводу кандидати оцінюються за прогнозованим центром, яскравістю, площею та співвідношенням сторін; прогноз швидкості утримує ціль під час коротких пропусків детектора.",
+    "project.stm32.protocols.title": "Протоколи передавання даних",
+    "project.stm32.protocol1.title": "Камера → STM32",
+    "project.stm32.protocol1.text": "I²C1 налаштовує регістри OV2640, а SPI1 читає JPEG-дані з буфера FIFO модуля ArduCAM.",
+    "project.stm32.protocol2.title": "STM32 → ESP32",
+    "project.stm32.protocol2.text": "SPI2 у режимі 0 разом із лінією READY використовує двійковий протокол CAM1: заголовок 20 байтів, пакети START/DATA/END, частини до 1536 байтів, зміщення, номери кадрів і повідомлення запиту/відповіді керування.",
+    "project.stm32.protocol3.title": "ESP32 → NanoPi",
+    "project.stm32.protocol3.text": "Постійне з'єднання Wi-Fi/TCP з портом 5000 передає кадри NPI1: двійковий заголовок 20 байтів, JPEG, необов'язкові метадані JSON у UTF-8 та компактну відповідь керування режимом, роздільністю і супроводом.",
+    "project.stm32.protocol4.title": "NanoPi → браузер",
+    "project.stm32.protocol4.text": "HTTP на порту 8080 надає панель керування, кінцеві точки REST, стан у JSON, окремі знімки та потік multipart MJPEG з профілями початкової якості або шириною 800, 640 чи 320 пікселів.",
+    "project.stm32.features.title": "Можливості програми та рішення для надійності",
+    "project.stm32.feature1.title": "Фіксована пам'ять на мікроконтролерах",
+    "project.stm32.feature1.text": "STM32 обертає два фіксовані об'єкти частин кадру й не зберігає JPEG цілком. ESP32 використовує три захищені комірки по 32 КіБ, тому опублікований кадр не перезаписується, доки його читає TCP-завдання або детектор.",
+    "project.stm32.feature2.title": "Обробка найновішого кадру",
+    "project.stm32.feature2.text": "NanoPi одразу публікує кожен коректний кадр, а працівник NPU замінює застаріле очікуване завдання замість накопичення черги. Це зменшує затримку, навіть якщо обробляється не кожен кадр.",
+    "project.stm32.feature3.title": "Три режими обробки",
+    "project.stm32.feature3.text": "Режим Raw лише передає відео, Algorithm додає рамки руху з ESP32, а Neural додає сегментацію NanoPi, розпізнавання YOLO, маски, класи, оцінки впевненості та ідентифікатори траєкторій.",
+    "project.stm32.feature4.title": "Перевірка й автоматичне відновлення",
+    "project.stm32.feature4.text": "Перевіряються сигнатури, довжини, зміщення, межі та маркери JPEG. Завеликий кадр спричиняє перехід на нижчу роздільність; Wi-Fi і TCP автоматично перепідключаються, а systemd перезапускає службу NanoPi.",
+    "project.stm32.li1": "Створив прошивку STM32Cube/ThreadX для ініціалізації камери, захоплення кадрів, діагностики та передавання через SPI.",
+    "project.stm32.li2": "Реалізував робочу прошивку PlatformIO для приймання кадрів на ESP32, керування станами, виявлення руху та передавання до NanoPi.",
+    "project.stm32.li3": "Розробив службу Linux для NanoPi з панеллю HTTP/MJPEG, абстракцією детектора, сегментацією руху та супроводом об'єктів.",
+    "project.stm32.li4": "Підготував конвеєр YOLOv5s ReLU INT8 RKNN для NPU RK3568 із вхідним зображенням 320×320.",
+    "project.stm32.li5": "Підготував українську й англійську документацію архітектури, інтерфейсів, розгортання, експлуатації, перевірки, безпеки та відповідності вимогам.",
+    "project.stm32.fact1": "успішних тестів NanoPi",
+    "project.stm32.fact2": "вхід моделі INT8",
+    "project.stm32.fact3": "статичної пам'яті ESP",
+    "project.stm32.fact4": "флешпам'яті програми ESP",
+    "project.stm32.fact5": "нейромережевий інференс за 0,8 TOPS",
+    "project.esp.eyebrow": "Проєкт 01 · Перший прототип",
+    "project.esp.title": "Передавання відео й супровід об'єктів на ESP8266",
+    "project.esp.lead": "Компактна система відеоспостереження та супроводу на базі ESP8266 і ArduCAM OV2640. Виявлення руху й супровід цілі обчислюються безпосередньо на мікроконтролері, а браузер лише відображає результат.",
+    "project.esp.photo": "Демонстрація вебінтерфейсу супроводу ESP8266",
+    "project.esp.proves": "Проєкт показує, що корисні алгоритми комп'ютерного зору можна запускати навіть на дуже обмеженому обладнанні, якщо спроєктувати їх під конкретний пристрій. Замість нейромереж система використовує різницю напівтонових кадрів, виділення обмежувальних рамок і супровід у локальній області інтересу.",
+    "project.esp.proves2": "Для перегляду камера передає JPEG, а режими виявлення та супроводу перемикають її на захоплення YUV422. Прошивка використовує лише канал яскравості Y, порівнює поточний і попередній кадри, фільтрує шум та зміни освітлення і надсилає компактну двійкову відповідь до вебінтерфейсу.",
     "project.esp.modes.title": "Режими роботи",
-    "project.esp.mode1.title": "JPEG stream",
-    "project.esp.mode1.text": "Multipart camera stream з вибором 160x120, 320x240 та 640x480 resolution.",
-    "project.esp.mode2.title": "Motion detection",
-    "project.esp.mode2.text": "ESP8266 сканує grayscale frame, знаходить changed pixels і повертає bounding box навколо руху.",
-    "project.esp.mode3.title": "Target tracking",
-    "project.esp.mode3.text": "Користувач клікає по цілі в браузері, а ESP8266 відстежує тільки локальний ROI навколо цього об'єкта.",
-    "project.esp.algorithm.title": "Дизайн алгоритму",
-    "project.esp.algorithm.text": "Firmware захоплює 160x120 YUV422 frame і залишає тільки brightness values, тому кожен analysis frame займає 19,200 bytes. Два статичні frame buffers допомагають уникати heap fragmentation під час безперервної роботи.",
-    "project.esp.algorithm.text2": "Щоб зменшити false positives, алгоритм ігнорує малий рух нижче pixel threshold і відкидає глобальні lighting changes, коли змінюється надто велика частина кадру. Tracking mode звужує пошук до padded region навколо попередньої позиції цілі.",
-    "project.esp.protocol.title": "Протокол передачі",
-    "project.esp.protocol.text": "Замість повільного JSON для кожного кадру ESP повертає custom binary packet: 8-byte header зі станом руху, кількістю змінених пікселів, валідністю bounding box і координатами, а далі 19,200 bytes grayscale pixels. Browser декодує Uint8Array і малює frame та boxes на HTML5 Canvas.",
-    "project.esp.li1": "Реалізував ESP8266 SoftAP web server з endpoints для stream, mode, detection і target.",
-    "project.esp.li2": "Інтегрував ArduCAM OV2640 через SPI/I2C і перемикання між JPEG та YUV capture paths.",
-    "project.esp.li3": "Побудував motion detection на frame differencing, thresholds, bounding boxes і lighting-change filtering.",
-    "project.esp.li4": "Реалізував ROI tracking, який керується кліком користувача в browser Canvas interface.",
-    "project.esp.li5": "Запакував detection results і grayscale pixels у compact binary response для швидшого rendering.",
-    "project.esp.fact1": "analysis frame",
-    "project.esp.fact2": "Y-channel buffer",
-    "project.esp.fact3": "binary header",
-    "project.esp.fact4": "camera CS pin",
+    "project.esp.mode1.title": "Потік JPEG",
+    "project.esp.mode1.text": "Потік multipart із можливістю вибрати роздільність 160×120, 320×240 або 640×480.",
+    "project.esp.mode2.title": "Виявлення руху",
+    "project.esp.mode2.text": "ESP8266 переглядає напівтоновий кадр, знаходить змінені пікселі та повертає обмежувальну рамку навколо руху.",
+    "project.esp.mode3.title": "Супровід цілі",
+    "project.esp.mode3.text": "Користувач вибирає ціль у браузері, після чого ESP8266 аналізує лише локальну область навколо цього об'єкта.",
+    "project.esp.algorithm.title": "Будова алгоритму",
+    "project.esp.algorithm.text": "Прошивка захоплює кадр YUV422 розміром 160×120 і залишає лише значення яскравості, тому один кадр для аналізу займає 19 200 байтів. Два статичні буфери запобігають фрагментації динамічної пам'яті під час безперервної роботи.",
+    "project.esp.algorithm.text2": "Щоб зменшити кількість хибних спрацювань, алгоритм ігнорує рух нижче порога кількості пікселів та відкидає загальні зміни освітлення, коли змінюється завелика частина кадру. Режим супроводу звужує пошук до області навколо попереднього положення цілі.",
+    "project.esp.protocol.title": "Протокол передавання",
+    "project.esp.protocol.text": "Замість повільного JSON для кожного кадру ESP повертає власний двійковий пакет: заголовок 8 байтів зі станом руху, кількістю змінених пікселів, ознакою коректності рамки та координатами, а потім 19 200 байтів напівтонового зображення. Браузер декодує Uint8Array і малює кадр та рамки на HTML5 Canvas.",
+    "project.esp.li1": "Реалізував вебсервер ESP8266 у режимі SoftAP із кінцевими точками потоку, режиму, виявлення та вибору цілі.",
+    "project.esp.li2": "Під'єднав ArduCAM OV2640 через SPI/I²C і реалізував перемикання між шляхами захоплення JPEG та YUV.",
+    "project.esp.li3": "Побудував виявлення руху на різниці кадрів, порогах, обмежувальних рамках і фільтрації змін освітлення.",
+    "project.esp.li4": "Реалізував супровід у локальній області, якою користувач керує натисканням на HTML5 Canvas у браузері.",
+    "project.esp.li5": "Запакував результати виявлення та напівтонові пікселі у компактну двійкову відповідь для швидшого відображення.",
+    "project.esp.fact1": "кадр для аналізу",
+    "project.esp.fact2": "буфер каналу Y",
+    "project.esp.fact3": "двійковий заголовок",
+    "project.esp.fact4": "лінія CS камери",
     "project.github": "Відкрити GitHub",
     "project.ev.eyebrow": "Проєкт 02",
     "project.ev.title": "Electric Vehicle Conversion & Embedded Control System",
@@ -182,14 +255,14 @@ const translations = {
 const pageTitles = {
   en: {
     home: "Kyrylo Matiushenko | Embedded Developer",
-    esp: "ESP8266 Vision | Kyrylo Matiushenko",
+    esp: "Vision Systems | Kyrylo Matiushenko",
     ev: "EV Control | Kyrylo Matiushenko",
     ai: "AI Navigation | Kyrylo Matiushenko",
     contact: "Contact | Kyrylo Matiushenko"
   },
   uk: {
     home: "Kyrylo Matiushenko | Embedded Developer",
-    esp: "ESP8266 Vision | Kyrylo Matiushenko",
+    esp: "Vision Systems | Kyrylo Matiushenko",
     ev: "EV Control | Kyrylo Matiushenko",
     ai: "AI Navigation | Kyrylo Matiushenko",
     contact: "Зв'язок | Kyrylo Matiushenko"
@@ -257,6 +330,63 @@ langButtons.forEach((button) => {
 });
 
 applyLanguage(getStoredLanguage());
+
+const projectVariantButtons = [...document.querySelectorAll("[data-project-variant]")];
+const projectVariantPanels = [...document.querySelectorAll("[data-project-panel]")];
+const projectVariantSwitch = document.querySelector(".vision-switch");
+let activeProjectVariant = "stm32";
+
+const showProjectVariant = (variant) => {
+  if (!projectVariantPanels.length || variant === activeProjectVariant) {
+    return;
+  }
+
+  const previousIndex = projectVariantPanels.findIndex((panel) => panel.dataset.projectPanel === activeProjectVariant);
+  const nextIndex = projectVariantPanels.findIndex((panel) => panel.dataset.projectPanel === variant);
+  const nextPanel = projectVariantPanels[nextIndex];
+
+  if (!nextPanel) {
+    return;
+  }
+
+  projectVariantPanels.forEach((panel) => {
+    const isActive = panel === nextPanel;
+    panel.hidden = !isActive;
+    panel.classList.toggle("is-active", isActive);
+    panel.classList.remove("is-entering-next", "is-entering-prev");
+  });
+
+  nextPanel.classList.add(nextIndex > previousIndex ? "is-entering-next" : "is-entering-prev");
+  nextPanel.addEventListener("animationend", () => {
+    nextPanel.classList.remove("is-entering-next", "is-entering-prev");
+  }, { once: true });
+
+  projectVariantButtons.forEach((button) => {
+    const isActive = button.dataset.projectVariant === variant;
+    button.setAttribute("aria-selected", String(isActive));
+    button.tabIndex = isActive ? 0 : -1;
+  });
+
+  activeProjectVariant = variant;
+  if (projectVariantSwitch) {
+    projectVariantSwitch.dataset.active = variant;
+  }
+};
+
+projectVariantButtons.forEach((button, index) => {
+  button.addEventListener("click", () => showProjectVariant(button.dataset.projectVariant));
+  button.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") {
+      return;
+    }
+
+    event.preventDefault();
+    const direction = event.key === "ArrowRight" ? 1 : -1;
+    const nextButton = projectVariantButtons[(index + direction + projectVariantButtons.length) % projectVariantButtons.length];
+    nextButton.focus();
+    showProjectVariant(nextButton.dataset.projectVariant);
+  });
+});
 
 const trackVisit = () => {
   if (!SUPABASE_URL) {
