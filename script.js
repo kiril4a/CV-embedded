@@ -580,7 +580,10 @@ if ("IntersectionObserver" in window) {
         }
       }
     },
-    { threshold: 0.16 }
+    // Large project articles can be several mobile viewports tall. Requiring a
+    // percentage of the whole element to be visible leaves them permanently
+    // transparent on phones, so reveal them as soon as they enter the screen.
+    { threshold: 0, rootMargin: "0px 0px -8% 0px" }
   );
 
   revealItems.forEach((item) => observer.observe(item));
